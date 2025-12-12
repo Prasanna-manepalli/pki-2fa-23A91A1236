@@ -9,7 +9,7 @@ It includes:
 - RSA-PSS commit proof signing  
 - TOTP generation and verification  
 - Docker container with FastAPI + Cron + UTC timezone  
-- Automated cron logging of OTP every minute  
+- Automated cron  logging of OTP every minute  
 - Fully reproducible deterministic seed flow  
 
 ---

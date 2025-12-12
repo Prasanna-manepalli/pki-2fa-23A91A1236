@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 # Ensure PYTHONPATH includes vendor packages installed in image
 export PYTHONPATH="${PYTHONPATH:-/srv/app/vendor}"
