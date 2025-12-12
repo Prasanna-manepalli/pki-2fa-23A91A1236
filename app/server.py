@@ -21,7 +21,7 @@ app = FastAPI(title="PKI-TOTP Auth Microservice")
 
 
 class DecryptRequest(BaseModel):
-    encrypted_seed: str
+    encrypted: str
 
 
 class VerifyRequest(BaseModel):
@@ -31,15 +31,15 @@ class VerifyRequest(BaseModel):
 @app.post("/decrypt-seed")
 async def post_decrypt_seed(req: DecryptRequest):
     # Validate inputs
-    if not req.encrypted_seed:
-        raise HTTPException(status_code=400, detail={"error": "Missing encrypted_seed"})
+    if not req.encrypted:
+        raise HTTPException(status_code=400, detail={"error": "Missing encrypted"})
     # Ensure private key exists
     if not PRIVATE_KEY_PATH.is_file():
         LOG.error("Private key not found at %s", PRIVATE_KEY_PATH)
         raise HTTPException(status_code=500, detail={"error": "Private key missing"})
     # Attempt decryption
     try:
-        seed = decrypt_seed(req.encrypted_seed, str(PRIVATE_KEY_PATH))
+        seed = decrypt_seed(req.encrypted, str(PRIVATE_KEY_PATH))
     except Exception as e:
         LOG.exception("Decryption failed")
         raise HTTPException(status_code=500, detail={"error": "Decryption failed"})
@@ -89,6 +89,3 @@ async def post_verify_2fa(req: VerifyRequest):
         raise HTTPException(status_code=500, detail={"error": "Verification failed"})
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app.server:app", host="0.0.0.0", port=int(os.environ.get("PORT", "8080")), log_level="info")
